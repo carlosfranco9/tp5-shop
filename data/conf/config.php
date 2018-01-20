@@ -207,5 +207,5 @@ return array (
     'aes_key' => '',
     'we_type' => '',
   ),
-  'addons_sql' => false,
+  'addons_sql' => true,
 );
