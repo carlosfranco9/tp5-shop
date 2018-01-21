@@ -13,7 +13,7 @@ use think\Route;
 $Route = new \Route;
 $Route->route_rule();
 //首页
-Route::get('/', function () {
+Route::get('/home', function () {
 	return view('app/shop/view/index.html');
 });
 //商品详情页
@@ -48,6 +48,14 @@ Route::get("/register", function() {
 Route::get("/terms", function() {
     return view('app/shop/view/terms.html');
 });
+
+// Route::get("/admin/category/delete/:category_id", 'admin/category/delete');
+Route::group('/admin/category/', function() {
+    Route::get("delete/:category_id", '/admin/category/delete');
+    Route::get("edit/:category_id", '/admin/category/edit');
+});
+
+
 return [
 	//也可以这里添加路由规则
 ];

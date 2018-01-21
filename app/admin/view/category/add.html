@@ -1,0 +1,49 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<div class="page-content">
+		<!--主题-->
+		<div class="page-header">
+			<h1>
+				您当前操作
+				<small>
+					<i class="ace-icon fa fa-angle-double-right"></i>
+					添加类别
+				</small>
+			</h1>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12">
+				<form class="form-horizontal" name="admin_rule_copy" method="post" action="">
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 父级： </label>
+						<div class="col-sm-9">
+							<select name="pid"  class="col-xs-10 col-sm-5" required>
+								<option value="0">--默认顶级--</option>
+								{foreach name="category_list" item="v"}
+									<option value="{$v.category_id}">{$v.str} {$v.category_name}</option>
+								{/foreach}
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="category_name" class="col-sm-3 control-label no-padding-right">类型名字：</label>
+						<div class="col-sm-9">
+							<input type="text" class="col-xs-10 col-sm-5" name="category_name" id='category_name' required>
+						</div>
+					</div>
+
+					<div class="clearfix">
+						<div class="col-md-offset-3 col-md-9">
+							<button class="btn btn-info" type="submit">
+								<i class="ace-icon fa fa-check bigger-110"></i>
+								保存
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{/block}
