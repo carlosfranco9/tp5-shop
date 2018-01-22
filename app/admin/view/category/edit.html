@@ -16,21 +16,36 @@
 			<div class="col-xs-12">
 				<form class="form-horizontal" name="admin_rule_copy" method="post" action="">
 					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 父级： </label>
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 上级名称： </label>
 						<div class="col-sm-9">
 							<select name="pid"  class="col-xs-10 col-sm-5" required>
-								<option value="0"  {if condition="$cate.category_id == 0"} selected {/if}>--默认顶级--</option>
+								<option value="0"{if condition="$cate.category_id == 0"} selected {/if}>--默认顶级--</option>
 								{foreach name="category_list" item="v"}
-									<option value="{$v.category_id}" {if condition="$v['category_id'] == $cate.category_pid"} selected {/if}>{$v.str} {$v.category_name}</option>
+									<option value="{$v.category_id}"{if condition="$v['category_id'] == $cate.category_pid"} selected {/if}>{$v.str} {$v.category_name}</option>
 								{/foreach}
 							</select>
 						</div>
 					</div>
 					
 					<div class="form-group">
-						<label for="category_name" class="col-sm-3 control-label no-padding-right">类型名字：</label>
+						<label for="category_name" class="col-sm-3 control-label no-padding-right">分类名称：</label>
 						<div class="col-sm-9">
 							<input type="text" class="col-xs-10 col-sm-5" name="category_name" id='category_name' required value="{$cate.category_name}">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="is_show" class="col-sm-3 control-label no-padding-right">是否显示：</label>
+						<div class="col-sm-9">
+							<input name="is_show" value="1" {if condition="$cate['is_show'] === 1"} checked {/if} class="ace ace-switch ace-switch-5" type="checkbox" />
+							<span class="lbl"></span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="sort" class="col-sm-3 control-label no-padding-right">排序：</label>
+						<div class="col-sm-9">
+							<input type="text" class="col-xs-10 col-sm-5" name="sort" id='sort' value="50" required value="{$cate.sort}">
 						</div>
 					</div>
 

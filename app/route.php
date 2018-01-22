@@ -53,6 +53,7 @@ Route::get("/terms", function() {
 Route::group('/admin/category/', function() {
     Route::get("delete/:category_id", '/admin/category/delete');
     Route::get("edit/:category_id", '/admin/category/edit');
+    Route::post("setShow", '/admin/category/setShow');
 });
 
 

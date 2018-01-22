@@ -54,4 +54,18 @@ class Category extends Model
 		$children = self::where('category_pid', $category_id)->select();
 		return $children;
 	}
+
+	public function setShow($category_id)
+	{
+		$old = self::get($category_id);
+		if ($old->is_show) {
+			//原来是显示。修改为不显示，即为0
+			$old->is_show = 0;
+			$old->save();
+			return false;
+		}
+		$old->is_show = 1;
+		$old->save();
+		return true;
+	}
 }
