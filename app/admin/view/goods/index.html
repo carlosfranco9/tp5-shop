@@ -39,6 +39,8 @@
 							<th>新品</th>
 							<th>热卖</th>
 							<th>上架</th>
+							<th>库存</th>
+							<th>上架时间</th>
 							<th style="border-right:#CCC solid 1px;">操作</th>
 						</tr>
 						</thead>
@@ -49,47 +51,48 @@
 							    	<th>{$val.goods_id}</th>
 							    	<th>{$val.goods_name}</th>
 							    	<th>{$val.goods_sn}</th>
-							    	<th>{$val.cat_id}</th>
+							    	<th>{$val.category_name}</th>
+							    	<th>{$val.shop_price}</th>
 							    	<th>
 							    		{if condition="$val['is_recommend'] eq 0"}
-											<a class="red display-btn" href="{:url('admin/category/setShow')}" data-id="{$val.is_recommend}" title="否">
+											<a class="red set-btn" href="{:url('admin/Goods/setInfo')}" data-id="{$val.goods_id}" title="否" data-type="is_recommend">
 												<div id="zt{$val.is_recommend}"><button class="btn btn-minier btn-danger">否</button></div>
 											</a>
 										{else/}
-											<a class="red display-btn" href="{:url('admin/category/setShow')}" data-id="{$val.is_recommend}" title="是">
+											<a class="red set-btn" href="{:url('admin/Goods/setInfo')}" data-id="{$val.goods_id}" title="是" data-type="is_recommend">
 												<div id="zt{$val.is_recommend}"><button class="btn btn-minier btn-yellow">是</button></div>
 											</a>
 										{/if}
 									</th>
 									<th>
 										{if condition="$val['is_new'] eq 0"}
-											<a class="red display-btn" href="{:url('admin/category/setShow')}" data-id="{$val.is_new}" title="否">
+											<a data-type="is_new" class="red set-btn" href="{:url('admin/Goods/setInfo')}" data-id="{$val.goods_id}" title="否">
 												<div id="zt{$val.is_new}"><button class="btn btn-minier btn-danger">否</button></div>
 											</a>
 										{else/}
-											<a class="red display-btn" href="{:url('admin/category/setShow')}" data-id="{$val.is_new}" title="是">
+											<a data-type="is_new" class="red set-btn" href="{:url('admin/Goods/setInfo')}" data-id="{$val.goods_id}" title="是">
 												<div id="zt{$val.is_new}"><button class="btn btn-minier btn-yellow">是</button></div>
 											</a>
 										{/if}
 									</th>
 									<th>
 										{if condition="$val['is_hot'] eq 0"}
-											<a class="red display-btn" href="{:url('admin/category/setShow')}" data-id="{$val.is_hot}" title="否">
+											<a class="red set-btn" href="{:url('admin/Goods/setInfo')}" data-id="{$val.goods_id}" title="否" data-type="is_hot">
 												<div id="zt{$val.is_hot}"><button class="btn btn-minier btn-danger">否</button></div>
 											</a>
 										{else/}
-											<a class="red display-btn" href="{:url('admin/category/setShow')}" data-id="{$val.is_hot}" title="是">
+											<a class="red set-btn" href="{:url('admin/Goods/setInfo')}" data-id="{$val.goods_id}" title="是" data-type="is_hot">
 												<div id="zt{$val.is_hot}"><button class="btn btn-minier btn-yellow">是</button></div>
 											</a>
 										{/if}
 									</th>
 									<th>
 										{if condition="$val['is_on_sale'] eq 0"}
-											<a class="red display-btn" href="{:url('admin/category/setShow')}" data-id="{$val.is_on_sale}" title="否">
+											<a class="red set-btn" href="{:url('admin/Goods/setInfo')}" data-id="{$val.goods_id}" title="否" data-type="is_on_sale">
 												<div id="zt{$val.is_on_sale}"><button class="btn btn-minier btn-danger">否</button></div>
 											</a>
 										{else/}
-											<a class="red display-btn" href="{:url('admin/category/setShow')}" data-id="{$val.is_on_sale}" title="是">
+											<a class="red set-btn" href="{:url('admin/Goods/setInfo')}" data-id="{$val.goods_id}" title="是" data-type="is_on_sale">
 												<div id="zt{$val.is_on_sale}"><button class="btn btn-minier btn-yellow">是</button></div>
 											</a>
 										{/if}
@@ -98,7 +101,7 @@
 							    	<th>{$val.last_update|date='Y-n-d',###}</th>
 							    	<td>
 							    		<div class="hidden-sm hidden-xs action-buttons">
-							    			<a class="green"  href="{:url('admin/category/edit', ['goods_id' => $val['goods_id']])}" title="修改">
+							    			<a class="green"  href="{:url('admin/goods/edit', ['goods_id' => $val['goods_id']])}" title="修改">
 							    				<i class="ace-icon fa fa-pencil bigger-130"></i>
 							    			</a>
 							    			<a class="red confirm-rst-url-btn" href="{:url('admin/category/delete', ['goods_id' => $val['goods_id']])}" data-info="你确定要删除吗？" title="删除">

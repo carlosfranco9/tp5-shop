@@ -234,6 +234,32 @@ $(function () {
         return false;
     });
 });
+
+/* 是否状态操作 */
+$(function () {
+    $('body').on('click','.set-btn',function () {
+        var $url = this.href,
+            val = $(this).data('id'),
+            $btn=$(this),
+            $type = $(this).data('type');
+        $.post($url, {x: val, type: $type}, function (data) {
+            if (data.code==1) {
+                if (data.msg == '否') {
+                    var a = '<button class="btn btn-minier btn-danger">否</button>';
+                    $btn.children('div').html(a).attr('title','否');
+                    return false;
+                } else {
+                    var b = '<button class="btn btn-minier btn-yellow">是</button>';
+                    $btn.children('div').html(b).attr('title','是');
+                    return false;
+                }
+            } else {
+                layer.alert(data.msg, {icon: 5});
+            }
+        }, "json");
+        return false;
+    });
+});
 /*************************************************************************** 所有ajaxForm提交 ********************************************************/
 /* 通用表单不带检查操作，失败不跳转 */
 $(function () {
@@ -1058,3 +1084,25 @@ $(function () {
         $("#geetest").toggle(200);
     });
 });
+
+/*
+ * 上传图片 后台专用
+ * @access  public
+ * @null int 一次上传图片张图
+ * @elementid string 上传成功后返回路径插入指定ID元素内
+ * @path  string 指定上传保存文件夹,默认存在public/upload/temp/目录
+ * @callback string  回调函数(单张图片返回保存路径字符串，多张则为路径数组 )
+ */
+function GetUploadify(num,elementid,path,callback)
+{       
+    var upurl ='/admin/upload/upload';
+    layer.open({
+        type: 2,
+        title: '上传图片',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['50%', '60%'],
+        content: upurl
+     });
+}
