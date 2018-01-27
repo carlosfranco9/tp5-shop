@@ -100,7 +100,7 @@ class Goods extends Base
     {
         $array = [];
         if (isset($data['top_id'])) {
-            unset($data['top_id'], $data['goods_remark'], $data['keywords'], $data['is_on_sale'], $data['is_hot'], $data['is_free_shipping'], $data['is_recommend']);
+            unset($data['top_id'], $data['goods_remark'], $data['keywords'], $data['is_on_sale'], $data['is_hot'], $data['is_free_shipping'], $data['is_recommend'], $data['goods_sn']);
         }
         foreach ($data as $key => $val) {
             $array[$key] = "require";
@@ -121,8 +121,11 @@ class Goods extends Base
     public function delete($goods_id)
     {
         $bool = GoodsModel::destroy($goods_id);
-        if (!$bool) return $this->error("删除失败");
-        return redirect("/admin/goods/index");
+        if (!$bool) {
+            return $this->error("删除失败");
+        }
+        Cache::clear("goods");
+        return $this->success("删除成功","/admin/goods/index");
     }
 
     /**
@@ -131,8 +134,33 @@ class Goods extends Base
      */
     public function store()
     {
-        $category = new CategoryModel();
-        $category_list =$category->getCategory();
+        if (request()->isPost()) {
+            $data     = request()->post();
+            $goods_sn = $data['goods_sn'];
+            unset($data['goods_sn'], $data['top_id']);
+            if (!$this->validatePostData(request()->post())) {
+                return $this->error($res);
+            }
+            $data['cat_id'] = $data['cate_id'];
+            unset($data['cate_id']);
+            if (isset($goods_sn) and empty($goods_sn)) {
+                $res = GoodsModel::event("after_insert", function ($user) {
+                    $n              = 1000000 + $user->goods_id;
+                    $n              = preg_replace("/^1*/", "0", $n);
+                    $user->goods_sn = "TP".$n;
+                    $user->save();
+                });
+            } else {
+                $data['goods_sn'] = $goods_sn;
+            }
+            $Goods        = new GoodsModel();
+            $Goods_insert = $Goods->save($data);
+            Cache::clear("goods");
+            return redirect("/admin/goods/index");
+        }
+
+        $category      = new CategoryModel();
+        $category_list = $category->getCategory();
         $this->assign("category_list", $category_list);
         return $this->fetch("add");
     }
