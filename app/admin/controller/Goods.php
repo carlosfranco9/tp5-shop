@@ -1,14 +1,19 @@
 <?php
 namespace app\admin\controller;
 
+use app\admin\model\Category as CategoryModel;
 use app\admin\model\Goods as GoodsModel;
-use app\admin\model\Category;
 use think\Cache;
+use think\Validate;
 
 class Goods extends Base
 {
     private $save_path = "goods/";
 
+    /**
+     * 商品列表
+     * @return 视图
+     */
     public function index()
     {
         $page = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -25,7 +30,7 @@ class Goods extends Base
 
     /**
      * 设置推荐、新品、热卖、上架
-     **/
+     */
     public function setInfo()
     {
         $goods = new GoodsModel();
@@ -37,118 +42,144 @@ class Goods extends Base
         return $this->success("是");
     }
 
+    /**
+     * 编辑商品页
+     * @param  $goods_id 商品id
+     * @return [type]
+     */
     public function edit($goods_id)
     {
-    	if (request()->isPost()) {
-    		return ;
-    	}
+        if (request()->isPost()) {
+            if (!$this->validatePostData(request()->post())) {
+                return $this->error($res);
+            }
+            $data  = request()->post();
+            $Goods = new GoodsModel();
+            $good  = $Goods->get(request()->post('goods_id'));
+            $good->save([
+                'cat_id'           => $data['cate_id'],
+                'goods_sn'         => $data['goods_sn'],
+                'goods_name'       => $data['goods_name'],
+                'store_count'      => $data["store_count"],
+                'market_price'     => $data['market_price'],
+                'shop_price'       => $data['shop_price'],
+                'cost_price'       => $data['cost_price'],
+                'keywords'         => $data['keywords'],
+                'goods_remark'     => $data['goods_remark'],
+                'goods_content'    => $data['goods_content'],
+                'original_img'     => $data['original_img'],
+                'is_on_sale'       => isset($data["is_on_sale"]) ? $data['is_on_sale'] : 0,
+                'is_free_shipping' => isset($data['is_free_shipping']) ? $data['is_free_shipping'] : 0,
+                'sort'             => $data['sort'],
+                'is_recommend'     => isset($data['is_recommend']) ? $data['is_recommend'] : 0,
+                'is_new'           => isset($data['is_new']) ? $data['is_new'] : 0,
+                'is_hot'           => isset($data['is_hot']) ? $data['is_hot'] : 0,
+                'last_update'      => time(),
+            ]);
+            return redirect("/admin/goods/index");
+        }
         //分类
-        $cate = new GoodsModel();
+        $cate       = new GoodsModel();
         $goods_cate = $cate->getCategory($goods_id);
         //所有类别
-        $category = new Category();
+        $category     = new CategoryModel();
         $all_category = $category->getCategory();
-    	$goodsModel = GoodsModel::get($goods_id);
-    	$this->assign("goods", $goodsModel);
+        $goodsModel   = GoodsModel::get($goods_id);
+        $this->assign("goods", $goodsModel);
         $this->assign("goods_category", $goods_cate);
         $this->assign("category_list", $all_category);
-    	return $this->fetch();
+        return $this->fetch();
     }
 
     /**
-     * @function imageUp
+     * 检测数据是否填写。删除一些不需要检测的字段
+     * @param  [type]
+     * @return [type]
+     */
+    protected function validatePostData($data)
+    {
+        $array = [];
+        if (isset($data['top_id'])) {
+            unset($data['top_id'], $data['goods_remark'], $data['keywords'], $data['is_on_sale'], $data['is_hot'], $data['is_free_shipping'], $data['is_recommend']);
+        }
+        foreach ($data as $key => $val) {
+            $array[$key] = "require";
+        }
+        $validate = new Validate($array);
+        //检测数据是否填写完整
+        if (!$validate->check($data)) {
+            return $this->error($validate->getError());
+        }
+        return true;
+    }
+
+    /**
+     * 删除商品
+     * @param  [type]
+     * @return [type]
+     */
+    public function delete($goods_id)
+    {
+        $bool = GoodsModel::destroy($goods_id);
+        if (!$bool) return $this->error("删除失败");
+        return redirect("/admin/goods/index");
+    }
+
+    /**
+     * 添加商品
+     * @return [type]
+     */
+    public function store()
+    {
+        $category = new CategoryModel();
+        $category_list =$category->getCategory();
+        $this->assign("category_list", $category_list);
+        return $this->fetch("add");
+    }
+
+    /**
+     * @return [type]
      */
     public function upload()
     {
         // 上传图片框中的描述表单名称，
         $pictitle = input('pictitle');
-        $dir = input('dir');
-        $title = htmlspecialchars($pictitle , ENT_QUOTES);
-        $path = htmlspecialchars($dir, ENT_QUOTES);
+        $dir      = input('dir');
+        $title    = htmlspecialchars($pictitle, ENT_QUOTES);
+        $path     = htmlspecialchars($dir, ENT_QUOTES);
         //$input_file ['upfile'] = $info['Filedata'];  一个是上传插件里面来的, 另外一个是 文章编辑器里面来的
         // 获取表单上传文件
         $file = request()->file('file');
-        if(empty($file))
+        if (empty($file)) {
             $file = request()->file('upfile');
+        }
 
         $result = $this->validate(
-                ['file' => $file],
-                ['file'=>'image|fileSize:40000000|fileExt:jpg,jpeg,gif,png,bmp'],
-                ['file.image' => '上传文件必须为图片','file.fileSize' => '上传文件过大','file.fileExt'=>'上传文件后缀名必须为jpg,jpeg,gif,png,bmp']
+            ['file' => $file],
+            ['file' => 'image|fileSize:40000000|fileExt:jpg,jpeg,gif,png,bmp'],
+            ['file.image' => '上传文件必须为图片', 'file.fileSize' => '上传文件过大', 'file.fileExt' => '上传文件后缀名必须为jpg,jpeg,gif,png,bmp']
         );
         if (true !== $result || !$file) {
             $state = "ERROR" . $result;
         } else {
-            $savePath = $this->save_path.date('Y').'/'.date('m-d').'/';
-            // $ossConfig = tpCache('oss');
-            // $ossSupportPath = ['goods', 'water'];
-            //水印
-
-            /*if (in_array(input('savepath'), $ossSupportPath) ) {//&& $ossConfig['oss_switch']) {
-                //商品图片可选择存放在oss
-                $object = 'public/upload/'.$savePath.md5(time()).'.'.pathinfo($file->getInfo('name'), PATHINFO_EXTENSION);
-                // $ossClient = new \app\common\logic\OssLogic;
-                // $return_url = $ossClient->uploadFile($file->getRealPath(), $object);
-                if (!$return_url) {
-                    $state = "ERROR" . $ossClient->getError();
-                    $return_url = '';
-                } else {
-                    $state = "SUCCESS";
-                }
-                @unlink($file->getRealPath());
-            } else { */
-                // 移动到框架应用根目录/public/uploads/ 目录下
-                $info = $file->rule(function ($file) {
-                return  md5(mt_rand()); // 使用自定义的文件保存规则
-                })->move('public/upload/'.$savePath);
-                if ($info) {
-                    $state = "SUCCESS";
-                } else {
-                    $state = "ERROR" . $file->getError();
-                }
-                $return_url = '/public/upload/'.$savePath.$info->getSaveName();
+            $savePath = $this->save_path . date('Y') . '/' . date('m-d') . '/';
+            // 移动到框架应用根目录/public/uploads/ 目录下
+            $info = $file->rule(function ($file) {
+                return md5(mt_rand()); // 使用自定义的文件保存规则
+            })->move('public/upload/' . $savePath);
+            if ($info) {
+                $state = "SUCCESS";
+            } else {
+                $state = "ERROR" . $file->getError();
+            }
+            $return_url = '/public/upload/' . $savePath . $info->getSaveName();
             // }
             $return_data['url'] = $return_url;
         }
-
-        /*if($state == 'SUCCESS'){
-            if($this->save_path=='goods/'){
-                $imgresource = ".".$return_url;
-                $image = \think\Image::open($imgresource);
-                // $water = tpCache('water');
-                //$image->open($imgresource);
-                $return_data['mark_type'] = $water['mark_type'];
-                if($water['is_mark']==1 && $image->width()>$water['mark_width'] && $image->height()>$water['mark_height']){
-                    if($water['mark_type'] == 'text'){
-                        //$image->text($water['mark_txt'],'./hgzb.ttf',20,'#000000',9)->save($imgresource);
-                        $ttf = './hgzb.ttf';
-                        if (file_exists($ttf)) {
-                            $size = $water['mark_txt_size'] ? $water['mark_txt_size'] : 30;
-                            $color = $water['mark_txt_color'] ?: '#000000';
-                            if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
-                                $color = '#000000';
-                            }
-                            $transparency = intval((100 - $water['mark_degree']) * (127/100));
-                            $color .= dechex($transparency);
-                            $image->open($imgresource)->text($water['mark_txt'], $ttf, $size, $color, $water['sel'])->save($imgresource);
-                            $return_data['mark_txt'] = $water['mark_txt'];
-                        }
-                    }else{
-                        //$image->water(".".$water['mark_img'],9,$water['mark_degree'])->save($imgresource);
-                        $waterPath = "." . $water['mark_img'];
-                        $quality = $water['mark_quality'] ? $water['mark_quality'] : 80;
-                        $waterTempPath = dirname($waterPath).'/temp_'.basename($waterPath);
-                        $image->open($waterPath)->save($waterTempPath, null, $quality);
-                        $image->open($imgresource)->water($waterTempPath, $water['sel'], $water['mark_degree'])->save($imgresource);
-                        @unlink($waterTempPath);
-                    }
-                }
-            }
-        }*/
-        $return_data['title'] = $title;
+        $return_data['title']    = $title;
         $return_data['original'] = ''; // 这里好像没啥用 暂时注释起来
-        $return_data['state'] = $state;
-        $return_data['path'] = $path;
+        $return_data['state']    = $state;
+        $return_data['path']     = $path;
         return response(json_encode($return_data));
         // $this->ajaxReturn($return_data,'json');
     }

@@ -15,7 +15,6 @@
     <div class="row">
         <div class="col-xs-12">
             <form action="" class="form-horizontal" method="post" name="admin_rule_copy">
-                <input type="hidden" name="goods_id" value="{$goods.goods_id}">
                 <!-- 分类 -->
                 <div class="form-group">
                     <label class="col-sm-3 control-label no-padding-right" for="form-field-1">
@@ -23,18 +22,15 @@
                     </label>
                     <div class="col-sm-9">
                         <select class="" name="top_id" required="">
+                        	<option value="0">请选择</option>
                             {foreach $category_list as $key => $val}
-                            <option {if condition="$goods_category['category_pid'] == $val['category_id']"} {php} $cate_id = $key; {/php} selected="" {/if} value="{$val.category_id}">
+                            <option value="{$val.category_id}">
                                 {$val.category_name}
                             </option>
                             {/foreach}
                         </select>
                         <select class="" name="cate_id" required="">
-                            {foreach $category_list[$cate_id]['children'] as $val}
-                            <option {if condition="$goods_category->category_id == $val['category_id']"} selected="" {/if} value="{$val.category_id}">
-                                {$val.category_name}
-                            </option>
-                            {/foreach}
+                        	<option>请选择</option>
                         </select>
                     </div>
                 </div>
@@ -45,7 +41,7 @@
                         商品名称：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="goods_name" name="goods_name" required="" type="text" value="{$goods.goods_name}">
+                        <input class="col-xs-10 col-sm-5" id="goods_name" name="goods_name" required="" type="text" >
                         </input>
                     </div>
                 </div>
@@ -56,7 +52,7 @@
                         商品简介：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="goods_remark" name="goods_remark"  type="text" value="{$goods.goods_remark}">
+                        <input class="col-xs-10 col-sm-5" id="goods_remark" name="goods_remark"  type="text" >
                         </input>
                     </div>
                 </div>
@@ -67,7 +63,7 @@
                         货号(不填则自动生成)：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="goods_sn" name="goods_sn" required="" type="text" value="{$goods.goods_sn}">
+                        <input class="col-xs-10 col-sm-5" id="goods_sn" name="goods_sn" required="" type="text" >
                         </input>
                     </div>
                 </div>
@@ -78,7 +74,7 @@
                         市场价格：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="market_price" name="market_price" required="" type="text" value="{$goods.market_price}">
+                        <input class="col-xs-10 col-sm-5" id="market_price" name="market_price" required="" type="text">
                         </input>
                     </div>
                 </div>
@@ -89,7 +85,7 @@
                         商品价格：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="shop_price" name="shop_price" required="" type="text" value="{$goods.shop_price}">
+                        <input class="col-xs-10 col-sm-5" id="shop_price" name="shop_price" required="" type="text">
                         </input>
                     </div>
                 </div>
@@ -100,7 +96,7 @@
                         商品成本：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="cost_price" name="cost_price" required="" type="text" value="{$goods.cost_price}">
+                        <input class="col-xs-10 col-sm-5" id="cost_price" name="cost_price" required="" type="text">
                         </input>
                     </div>
                 </div>
@@ -111,7 +107,7 @@
                         商品库存：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="store_count" name="store_count" required="" type="text" value="{$goods.store_count}">
+                        <input class="col-xs-10 col-sm-5" id="store_count" name="store_count" required="" type="text">
                         </input>
                     </div>
                 </div>
@@ -122,7 +118,7 @@
                         是否推荐：
                     </label>
                     <div class="col-sm-9">
-                        <input  class="ace ace-switch ace-switch-5" {if condition="$goods['is_recommend'] === 1"} checked {/if} name="is_recommend" type="checkbox" value="1"/>
+                        <input  class="ace ace-switch ace-switch-5" name="is_recommend" type="checkbox" value="1"/>
                         <span class="lbl">
                         </span>
                     </div>
@@ -134,7 +130,7 @@
                         是否新品：
                     </label>
                     <div class="col-sm-9">
-                        <input  class="ace ace-switch ace-switch-5" {if condition="$goods['is_new'] === 1"} checked {/if} name="is_new" type="checkbox" value="1"/>
+                        <input  class="ace ace-switch ace-switch-5" name="is_new" type="checkbox" value="1"/>
                         <span class="lbl">
                         </span>
                     </div>
@@ -146,7 +142,7 @@
                         是否热卖：
                     </label>
                     <div class="col-sm-9">
-                        <input  class="ace ace-switch ace-switch-5" {if condition="$goods['is_hot'] === 1"} checked {/if} name="is_hot" type="checkbox" value="1"/>
+                        <input  class="ace ace-switch ace-switch-5" name="is_hot" type="checkbox" value="1"/>
                         <span class="lbl">
                         </span>
                     </div>
@@ -158,7 +154,7 @@
                         是否上架：
                     </label>
                     <div class="col-sm-9">
-                        <input  class="ace ace-switch ace-switch-5" {if condition="$goods['is_on_sale'] === 1"} checked {/if} name="is_on_sale" type="checkbox" value="1"/>
+                        <input  class="ace ace-switch ace-switch-5" name="is_on_sale" type="checkbox" value="1"/>
                         <span class="lbl">
                         </span>
                     </div>
@@ -170,7 +166,7 @@
                         是否包邮：
                     </label>
                     <div class="col-sm-9">
-                        <input  class="ace ace-switch ace-switch-5" {if condition="$goods['is_free_shipping'] === 1"} checked {/if} name="is_free_shipping" type="checkbox" value="1"/>
+                        <input  class="ace ace-switch ace-switch-5" name="is_free_shipping" type="checkbox" value="1"/>
                         <span class="lbl">
                         </span>
                     </div>
@@ -185,14 +181,14 @@
                         <div class="input-file-show">
                             <span class="show">
                                 <a class="nyroModal" href="" id="img_a" rel="gal" target="_blank">
-                                    <i class="fa fa-picture-o" id="img_i" onmouseout="layer.closeAll();" onmouseover="layer.tips('<img src={$goods.original_img}>',this,{tips: [1, '#fff']});">
+                                    <i class="fa fa-picture-o" id="img_i" onmouseout="layer.closeAll();" onmouseover="layer.tips('<img src=>',this,{tips: [1, '#fff']});">
                                     </i>
                                 </a>
                             </span>
                             <span class="type-file-box">
-                                <input class="type-file-text" id="imagetext" name="original_img" type="text" value="{$goods.original_img}">
+                                <input class="type-file-text" id="imagetext" name="original_img" type="text" value="">
                                     <input class="type-file-button" id="button1" name="button" type="button" value="选择上传...">
-                                        <input class="type-file-file" hidefocus="true" nc_type="change_site_logo" onclick="GetUploadify(1,'','goods','img_call_back')" size="30" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效" value="{$goods.original_img}">
+                                        <input class="type-file-file" hidefocus="true" nc_type="change_site_logo" onclick="GetUploadify(1,'','goods','img_call_back')" size="30" title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效" >
                                         </input>
                                     </input>
                                 </input>
@@ -212,7 +208,7 @@
                         排序：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="sort" name="sort" required="" type="text" value="{$goods.sort}">
+                        <input class="col-xs-10 col-sm-5" id="sort" name="sort" required="" type="text" >
                         </input>
                     </div>
                 </div>
@@ -223,7 +219,7 @@
                         商品关键字：
                     </label>
                     <div class="col-sm-9">
-                        <input class="col-xs-10 col-sm-5" id="keywords" name="keywords" type="text" value="{$goods.keywords}">
+                        <input class="col-xs-10 col-sm-5" id="keywords" name="keywords" type="text" >
                         </input>
                     </div>
                 </div>
@@ -235,7 +231,7 @@
                     </label>
                     <div class="col-sm-9">
                         <textarea class="span12 ckeditor" id="goods_content" name="goods_content" title="">
-                            {$goods.goods_content}
+                            
                         </textarea>
                         <span id="err_goods_content" style="color:#F00; display:none;">
                         </span>
@@ -339,4 +335,23 @@
     });
 </script>
 <!--以上是在线编辑器 代码  end-->
+<!-- 联动下拉列表 -->
+<script type="text/javascript">
+	$(function(){
+		$("select[name='top_id']").change(function(){
+			var cate_id = $(this).val();
+			if (cate_id == 0) {
+				$("select[name='cate_id']").empty();
+				$("select[name='cate_id']").append("<option>请选择</option>");
+				return ;
+			}
+			$.get("/admin/category/getSecondCate?cate_id="+cate_id, function(data) {
+				$("select[name='cate_id']").empty();
+				$.each(data, function(index, value) {
+					$("select[name='cate_id']").append("<option value="+value.category_id+">"+value.category_name+"</option>");
+				})
+			})
+		});
+	})
+</script>
 {/block}

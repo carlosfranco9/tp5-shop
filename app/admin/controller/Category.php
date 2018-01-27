@@ -103,7 +103,9 @@ class Category extends Base
         Cache::rm("category_list");
         return $this->fetch();
     }
-
+    /**
+     * 
+     */
     public function setShow()
     {
         if (request()->isAjax()) {
@@ -116,5 +118,11 @@ class Category extends Base
                 $this->success('状态禁止');
             }
         }
+    }
+
+    public function getSecondCate(Request $request)
+    {
+        $data = CategoryModel::where("category_pid", $request->get('cate_id'))->select();
+        return $data;
     }
 }

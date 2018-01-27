@@ -60,6 +60,7 @@ Route::group('/admin/category/', function () {
 Route::group("/admin/Goods/", function () {
     Route::post("setInfo", '/admin/Goods/setInfo');
     Route::get("edit/:goods_id", '/admin/Goods/edit');
+    Route::get("delete/:goods_id", '/admin/Goods/delete');
 });
 
 //上传
