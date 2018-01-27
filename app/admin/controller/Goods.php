@@ -153,6 +153,8 @@ class Goods extends Base
             } else {
                 $data['goods_sn'] = $goods_sn;
             }
+            $data['on_time'] = time();
+            $data['last_update'] = $data['on_time'];
             $Goods        = new GoodsModel();
             $Goods_insert = $Goods->save($data);
             Cache::clear("goods");
