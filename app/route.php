@@ -66,6 +66,14 @@ Route::group("/admin/Goods/", function () {
 //上传
 Route::any("/admin/upload/preview", '/admin/upload/preview');
 
+//商品咨询
+Route::group("/admin/consult/", function (){
+    Route::get("detail/:consult_id", '/admin/consult/detail');
+    Route::get("delete/:consult_id", '/admin/consult/delete');
+    Route::post("setShow/:consult_id", '/admin/consult/setShow');
+    Route::post("search", '/admin/consult/search');
+});
+
 return [
     //也可以这里添加路由规则
 ];

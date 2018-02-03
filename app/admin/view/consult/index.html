@@ -1,0 +1,121 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            您当前的操作
+            <small>
+                <i class="ace-icon fa fa-angle-double-right"></i>
+                商品咨询
+            </small>
+        </h1>
+    </div>
+    <div class="row maintop">
+        <div class="col-xs-5 col-sm-2 margintop5">
+            <a href="{url:('admin/Consult/delete')}">
+                <button class="btn btn-sm btn-danger">
+                    <i class="ace-icon fa fa-trash-o bigger-120 white"></i>
+                    删除
+                </button>
+            </a>
+        </div>
+        <div class="col-xs-5 col-sm-2 margintop5">
+            <a href="{url:('admin/Consult/show')}">
+                <button class="btn btn-sm btn-primary">
+                    <i class="ace-icon fa fa-eye bigger-110"></i>
+                    显示
+                </button>
+            </a>
+        </div>
+        <div class="col-xs-5 col-sm-2 margintop5">
+            <a href="{url:('admin/Consult/hide')}">
+                <button class="btn btn-sm btn-primary">
+                    <i class="ace-icon fa fa-eye-slash bigger-110"></i>
+                    隐藏
+                </button>
+            </a>
+        </div>
+        <div class="nav-search" id="nav-search">
+            <form class="form-search" method="post" action="{:url('admin/consult/search')}">
+                <span class="input-icon">
+                    <input type="text" name="keyword" id="keyword"  placeholder="请输入关键字" class="nav-search-input">
+                    <i class="ace-icon fa fa-search nav-search-icon"></i>
+                </span>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <form action="" name="consult_list">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th class="center">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" id="chkAll" onclick="CheckAll(this.form)" value="全选">
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th class="left">用户名</th>
+                        <th class="left">咨询内容</th>
+                        <th class="left">商品</th>
+                        <th class="center">显示</th>
+                        <th class="center">咨询类型</th>
+                        <th class="center">咨询时间</th>
+                        <th class="center">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="ajax-data">
+                    {foreach $list as $val}
+                    <tr>
+                        <td class="center">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" id='cb{$val.consult_id}' value='{$val.consult_id}'>
+                                <span class="lbl"></span>
+                            </label>
+                        </td>
+                        <td class="left">{$val.username}</td>
+                        <td class="left">{$val.content}</td>
+                        <td class="left">
+                            <a href="#">{$val.goods_name}</a>
+                        </td>
+                        <td class="center">
+                            {if 1==$val.is_show}
+                            <a class="green" href="{:url('admin/consult/setShow')}" data-id="{$val.consult_id}">
+                                <i class="ace-icon fa fa-check-circle"></i>是
+                            </a>
+                            {else/}
+                            <a class="red" href="{:url('admin/consult/setShow')}" data-id="{$val.consult_id}">
+                                <i class="ace-icon fa fa-ban"></i>否
+                            </a>
+                            {/if}
+                        </td>
+                        <td class="center">
+                            {switch name=$val.consult_type}
+                            {case value="1"}<p>商品咨询</p>{/case}
+                            {case value="2"}<p>支付咨询</p>{/case}
+                            {case value="3"}<p>配送咨询</p>{/case}
+                            {case value="4"}<p>售后咨询</p>{/case}
+                            {/switch}
+                        </td>
+                        <td class="center">{$val.add_time|date="Y-m-d H:i:s",###}</td>
+                        <td class="center">
+                            <div class="center" >
+                                <a class="btn btn-minier btn-info" href="{:url('admin/consult/detail', ['consult_id' => $val.consult_id])}">
+                                    <i class="fa fa-list-alt"></i>
+                                    查看
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    <tr>
+                        <td height="50" colspan="12" align="left">{$list->render()}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}
